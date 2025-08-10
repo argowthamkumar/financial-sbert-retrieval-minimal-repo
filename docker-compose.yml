@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  embed-service:
+    build: ./python_embed_service
+    volumes:
+      - ./python_embed_service:/app
+      - ./sample_data:/data
+    command: ["python","embed_service.py"]
+    ports:
+      - "8001:8001"
+  rust-api:
+    build: ./rust_api
+    volumes:
+      - ./rust_api:/app
+    ports:
+      - "8080:8080"
+  streamlit:
+    image: python:3.10-slim
+    volumes:
+      - ./streamlit_frontend:/app
+    working_dir: /app
+    command: sh -c "pip install streamlit requests && streamlit run app.py --server.port 8501 --server.address 0.0.0.0"
+    ports:
+      - "8501:8501"
